@@ -1,8 +1,7 @@
- 
 {
-  "name": "asmar-security-bot",
+  "name": "devil",
   "version": "2.0.0",
-  "description": "C2 Server by Asmar",
+  "description": "",
   "main": "server.js",
   "engines": {
     "node": "16.13.2"
@@ -10,7 +9,8 @@
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Asmar",
+  "keywords": [],
+  "author": "l",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.1",
